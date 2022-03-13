@@ -1,0 +1,42 @@
+#!/bin/sh 
+#
+########## Begin MOAB/Slurm header ##########
+#
+# Give job a reasonable name
+#MOAB -N SharedMemory_noparpool_1_20
+#
+# Request number of nodes and CPU cores per node for job
+#MOAB -l nodes=8:ppn=48:visu
+#
+# Estimated wallclock time for job
+#MOAB -l walltime=05:30:00
+#
+# Send mail when job begins, aborts and ends
+#MOAB -m bae
+#
+########### End MOAB header ##########
+
+echo "Submit Directory:                     $MOAB_SUBMITDIR"
+echo "Working Directory:                    $PWD"
+echo "Running on host                       $HOSTNAME"
+echo "Job id:                               $MOAB_JOBID"
+echo "Job name:                             $MOAB_JOBNAME"
+echo "Number of nodes allocated to job:     $MOAB_NODECOUNT"
+echo "Number of cores allocated to job:     $MOAB_PROCCOUNT"
+
+# Load module 
+module add math/matlab/R2016a
+
+export MATLABPATH=/project/fh2-project-scs/wi7205/IAI_FH2/matpower5.1:/project/fh2-project-scs/wi7205/IAI_FH2/input:/project/fh2-project-scs/wi7205/IAI_FH2/output1:/project/fh2-project-scs/wi7205/IAI_FH2/output2
+
+#EXPORT PATH=$HOME/MATPOWER/matpower5.1:$HOME/case9241pegase_COS-Loads:$PATH
+
+# Start a Matlab program
+
+matlab -nodisplay -r my2880_noparpool > OUTPUTparpool_YES_NO/my2880_noparpool_1_20.out 2>&1
+
+# mv *.out system_output/.
+# mv *.txt CRAP/.
+# mv DPK_*.m CRAP/
+
+exit
