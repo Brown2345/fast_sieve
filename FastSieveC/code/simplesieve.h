@@ -12,7 +12,7 @@ void SimpleSiev(short *p, unsigned long N)
   if(N<2) return;
   p[2]=1;
   if(N<3) return;
-  
+
   for(n=3; n<=N-1;) {
     p[n++]=1; p[n++]=0;
   }
@@ -40,13 +40,13 @@ void AllocSimpleSiev(unsigned long M)
 void SimpleSegSiev(short *s, unsigned long n, unsigned long D, unsigned long M)
 /* assumes D+1 units of memory allocated at s */
 /* ensures, for 0<=j<=D, that
-  s[j] = 1   if n+j is coprime to all m<=M, 
+  s[j] = 1   if n+j is coprime to all m<=M,
   s[j] = 0   otherwise */
 {
   unsigned long j, m;
   unsigned long np;
   short bn;
-  
+
   if(M<=1) {
     for(j=0; j<=D; j++)
       s[j] = 1;
@@ -61,6 +61,7 @@ void SimpleSegSiev(short *s, unsigned long n, unsigned long D, unsigned long M)
   if(j==D) s[j]=bn;
 
   if(n==0) {
+    s[0] = 0;
     if(D>=1) s[1]=0; /* since 1 is not a prime */
     if(D>=2) s[2]=1; /* since 2 is a prime */
   }
@@ -100,7 +101,7 @@ void SimpleSegSievP(short *s, unsigned long n, unsigned long D)
 void SubSegSiev(short *s, unsigned long n, long D, long M)
 /* assumes D+1 units of memory allocated at s */
 /* ensures, for 0<=j<=D, that
-  s[j] = 1   if n+j is coprime to all m<=M, 
+  s[j] = 1   if n+j is coprime to all m<=M,
   s[j] = 0   otherwise */
 {
   mpz_class sqt;
@@ -134,12 +135,12 @@ void SubSegSiev(short *s, unsigned long n, long D, long M)
     if(D>=1) s[1]=1; /* since 2 is a prime */
   }
 
-  
+
   mpz_sqrt(sqt.get_mpz_t(), Mp1.get_mpz_t());
   Dp = sqt.get_ui();                     /* Dp = (int) sqrt(M) */
 
   /*  fprintf(stderr,"%ld\n",Dp);*/
-    
+
   P = (short *) calloc(Dp+1,sizeof(short));
 
   AllocSimpleSiev(Dp);
@@ -170,4 +171,3 @@ void SegSiev(short *s, unsigned long n, unsigned long D)
 
   SubSegSiev(s,n,D,M);
 }
-
