@@ -1,11 +1,11 @@
-CXX:=g++
+CXX:=icpc
 
-TARGET = simplesieve
+TARGET = sievesimp
 
-LDFLAGS=-g -O3 -frounding-math -mfpmath=387 -finline-functions  -std=c++11
+LDFLAGS=-g -O3 -frounding-math -mfpmath=387 -finline-functions -qopenmp -std=c++11
 LDLIBS=-lgmp
-simplesieve:   diophappr.h solvemodz.h
-	$(CXX) $(LDFLAGS) simplesieve.cpp -o simplesieve $(LDLIBS)
+sievesimp: sievesimp.cpp diophappr.h solvemodz.h
+	$(CXX) $(LDFLAGS) sievesimp.cpp -o sievesimp $(LDLIBS)
 #sievesimp: sievesimp.o
 #	$(CXX) $(LDFLAGS) -o sievesimp $(LDLIBS)
 #sievesimp.o: sievesimp.cpp diophappr.h solvemodz.o

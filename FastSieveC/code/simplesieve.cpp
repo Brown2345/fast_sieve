@@ -1,3 +1,9 @@
+#include <stdio.h>
+#include <cstddef>
+#include <iostream>
+
+#include <gmpxx.h>
+
 short *smallprime=NULL;
 unsigned long smallM;
 
@@ -172,14 +178,15 @@ void SegSiev(short *s, unsigned long n, unsigned long D)
   SubSegSiev(s,n,D,M);
 }
 
-void main () {
-  short *s = 51;
+int main (void) {
+  short *s = (short*) 51;
   int n = 50;
   int D = 50;
   SegSiev(s,n,D);
-  for (i = 0; i <= D; i++) {
+  for (int i = 0; i <= D; i++) {
     if (s[i] == 1) {
       std::cout << 50 + i << std::endl;
     }
   }
+  return 0;
 }
