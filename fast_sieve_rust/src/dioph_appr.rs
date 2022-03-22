@@ -4,7 +4,7 @@ pub struct Rat {
 }
 
 #[allow(non_snake_case)]
-pub fn dioph_appr(mut alpha: Rat, Q: usize, mut a: usize, mut ainv: i64, mut qout: i64)
+pub fn dioph_appr(mut alpha: Rat, Q: usize, mut _a: usize, mut _ainv: i64, mut _qout: i64)
 /* precondition: alpha.num>=0, alpha.den>=0 */
 /* constructs approximation a/q, q<=Q, to alpha */
 /* sets ainv to a^{-1} mod q */
@@ -13,15 +13,15 @@ pub fn dioph_appr(mut alpha: Rat, Q: usize, mut a: usize, mut ainv: i64, mut qou
     let mut p = b;
     let mut q = 1;
     let mut pmin = 1;
-    let mut qmin: usize = 0;
+    let mut qmin = 0;
     let mut s = 1 as i64;
 
     while q <= Q {
         let nummodb = alpha.num % alpha.den;
         if nummodb == 0 {
-            a = p;
-            ainv = (-s * qmin as i64) % q as i64;
-            qout = q as i64;
+            _a = p;
+            _ainv = (-s * qmin as i64) % q as i64;
+            _qout = q as i64;
             return;
         }
         alpha.num = alpha.den;
@@ -35,9 +35,9 @@ pub fn dioph_appr(mut alpha: Rat, Q: usize, mut a: usize, mut ainv: i64, mut qou
         q = qplus;
         s = -s;
     }
-    a = pmin;
-    ainv = (s * q as i64) % qmin as i64;
-    qout = qmin as i64;
+    _a = pmin;
+    _ainv = (s * q as i64) % qmin as i64;
+    _qout = qmin as i64;
 }
 
 //test here

@@ -33,4 +33,3 @@ void diophappr(rat alph, long Q, long *a, long *ainv, long *qout)
   flip = (s==1 ? q : - q);
   *a = pmin; *ainv = mod(flip,qmin); *qout = qmin;
 }
-
