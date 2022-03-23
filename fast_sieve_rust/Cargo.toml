@@ -12,3 +12,4 @@ path = "src/main.rs"
 
 [dependencies]
 rug = "1.15.0"
+rayon = "1.5.1"

@@ -199,9 +199,10 @@ pub fn sub_seg_sieve(n: usize, delta: usize, M: usize) -> Vec<usize>
 }
 
 #[allow(non_snake_case)]
-pub fn seg_sieve(n: usize, delta: usize) -> Vec<usize>
+pub fn seg_sieve(n: usize, delta: usize)
 //main function to call and to time
 {
     let M = Integer::from(n + delta).sqrt().to_usize_wrapping();
-    return simple_seg_sieve(n, delta, M);
+    let _s = simple_seg_sieve(n, delta, M);
+    println!("{:?}", _s);
 }
