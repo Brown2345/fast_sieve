@@ -43,6 +43,30 @@ pub fn simple_sieve(N: usize) -> Vec<i32>
 }
 //simple_sieve test here
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_simple_sieve() {
+        assert_eq!(simple_sieve(5), vec![2, 3, 5]);
+    }
+
+    #[test]
+    fn test_simple_seg_sieve() {
+        assert_eq!(simple_seg_sieve(10, 3, 5), vec![11, 13]);
+    }
+
+    #[test]
+    fn test_sub_seg_sieve() {
+        assert_eq!(sub_seg_sieve(10, 3, 5), vec![11, 13]);
+    }
+
+    #[test]
+    fn test_seg_sieve() {
+        assert_eq!(seg_sieve(10, 5), vec![11, 13]);
+    }
+}
 #[allow(non_snake_case)]
 pub fn simple_seg_sieve(n: usize, delta: usize, M: usize) -> Vec<usize>
 //s has size D+1,
@@ -97,7 +121,7 @@ s[j] = 0   otherwise */
     let mut np;
     for m in (3..=M).step_by(2) {
         if smallprime[m] == 1 {
-            np = m * (n as f64 / m as f64).ceil() as usize; //smallest multiple >=n of m
+            np = m * ((n + m - 1) / m); //smallest multiple >=n of m
             if np <= m {
                 np = 2 * m;
             }
@@ -178,7 +202,7 @@ pub fn sub_seg_sieve(n: usize, delta: usize, M: usize) -> Vec<usize>
         }
         while (prime <= m + deltap) && (prime <= M) {
             if p[prime - m] == 1 {
-                let mut np = prime * (n as f64 / prime as f64).ceil() as usize; //smallest multiple >=n of m
+                let mut np = prime * ((n + prime - 1) / prime); //smallest multiple >=n of m
 
                 if np <= prime {
                     np = 2 * prime;
@@ -199,10 +223,10 @@ pub fn sub_seg_sieve(n: usize, delta: usize, M: usize) -> Vec<usize>
 }
 
 #[allow(non_snake_case)]
-pub fn seg_sieve(n: usize, delta: usize)
+pub fn seg_sieve(n: usize, delta: usize) -> Vec<usize>
 //main function to call and to time
 {
     let M = Integer::from(n + delta).sqrt().to_usize_wrapping();
     let _s = simple_seg_sieve(n, delta, M);
-    println!("{:?}", _s);
+    return _s;
 }

@@ -10,7 +10,7 @@
 #include <vector>
 
 /*  Compile using
-g++ sievesimp.cpp -osievesimp -O3 -frounding-math -mfpmath=387 -finline-functions -lgmp -fopenmp */
+g++ sievesimp8.cpp -osievesimp -O3 -frounding-math -mfpmath=387 -finline-functions -lgmp -fopenmp */
 double tzero = 0, tone = 0, ttwo = 0;
 long counter = 0, counter1 = 0;
 void OrigSegSiev(short *s, unsigned long n, long D, long K, long quot)
@@ -25,16 +25,16 @@ void OrigSegSiev(short *s, unsigned long n, long D, long K, long quot)
   rat alpha0, alpha1;
   mpq_class eta, etaq;
   long c,cainv,a,ainv,q,k,r0,j;
-  
+
   mpz_sqrt(sqt.get_mpz_t(), npD.get_mpz_t());
   x = sqt.get_si();                     /* x = (int) sqrt(n+D) */
-  		  
+
   SubSegSiev(s,n-D,2*D,K*D);
   for(M = K*D+1; M <=x; M+=(2*R+1)) {
      M2kap = ((((((mpz_class) M)*M)*D)/quot)/n);  /* (M^2)*D/(quot*n) */
     mpz_sqrt(sqtR.get_mpz_t(), M2kap.get_mpz_t());
     R = sqtR.get_si();  /* (int) (M*sqrt(kappa*D/n)) */
-    
+
     m0 = M+R; Mp = M+2*R;
     alpha0.num = n%m0; alpha0.den = m0;
     alpha1.den = m0*m0; alpha1.num = (alpha1.den-n%alpha1.den);
@@ -53,14 +53,14 @@ void OrigSegSiev(short *s, unsigned long n, long D, long K, long quot)
       for(m= m0+r0; m>=M; m-=q)
 	if(m%2) {
 	  np = ((n+D)/m)*m;
-	  if(np>=n-D && np<=n+D && np>m) 
-	    s[np-(n-D)]=0;		
+	  if(np>=n-D && np<=n+D && np>m)
+	    s[np-(n-D)]=0;
 	}
       for(m=m0+r0+q; m<=Mp; m+=q)
 	if(m%2) {
 	  np = ((n+D)/m)*m;
-	  if(np>=n-D && np<=n+D && np>m) 
-	    s[np-(n-D)]=0;	
+	  if(np>=n-D && np<=n+D && np>m)
+	    s[np-(n-D)]=0;
 	}
     }
 
@@ -70,13 +70,13 @@ void OrigSegSiev(short *s, unsigned long n, long D, long K, long quot)
       for(m= m0+r0; m>=M; m-=q)
 	if(m%2) {
 	  np = ((n+D)/m)*m;
-	  if(np>=n-D && np<=n+D && np>m) 
+	  if(np>=n-D && np<=n+D && np>m)
 	    s[np-(n-D)]=0;
 	}
       for(m=m0+r0+q; m<=Mp; m+=q)
 	if(m%2) {
 	  np = ((n+D)/m)*m;
-	  if(np>=n-D && np<=n+D && np>m) 
+	  if(np>=n-D && np<=n+D && np>m)
 	    s[np-(n-D)]=0;
 	}
     }
@@ -87,21 +87,21 @@ void DoSieving(short *s, long k, long q, long M, long m0, long Mp, long D, unsig
 
     long j,m, r0;
     unsigned long np;
-    
+
     for(r0= -cainv, j=0; j <= k+1; j++, r0 -= ainv) {
       if(r0 <= -q)
 	r0 += q;
       for(m= m0+r0; m>=M; m-=q)
 	if(m%2) {
 	  np = ((n+D)/m)*m;
-	  if(np>=n-D && np<=n+D && np>m) 
-	    s[np-(n-D)]=0;		
+	  if(np>=n-D && np<=n+D && np>m)
+	    s[np-(n-D)]=0;
 	}
       for(m=m0+r0+q; m<=Mp; m+=q)
 	if(m%2) {
 	  np = ((n+D)/m)*m;
-	  if(np>=n-D && np<=n+D && np>m) 
-	    s[np-(n-D)]=0;	
+	  if(np>=n-D && np<=n+D && np>m)
+	    s[np-(n-D)]=0;
 	}
     }
 
@@ -111,13 +111,13 @@ void DoSieving(short *s, long k, long q, long M, long m0, long Mp, long D, unsig
       for(m= m0+r0; m>=M; m-=q)
 	if(m%2) {
 	  np = ((n+D)/m)*m;
-	  if(np>=n-D && np<=n+D && np>m) 
+	  if(np>=n-D && np<=n+D && np>m)
 	    s[np-(n-D)]=0;
 	}
       for(m=m0+r0+q; m<=Mp; m+=q)
 	if(m%2) {
 	  np = ((n+D)/m)*m;
-	  if(np>=n-D && np<=n+D && np>m) 
+	  if(np>=n-D && np<=n+D && np>m)
 	    s[np-(n-D)]=0;
 	}
     }
@@ -146,11 +146,11 @@ std::vector<long> calcStartVals (long D, long quot, long n, long K, mpz_class np
   long R;
   std::vector<long> MStartVal;
   long end = 0;
-  for(long M = K*D+1; M <=x; M+=(2*R+1)) { 
+  for(long M = K*D+1; M <=x; M+=(2*R+1)) {
     if (end++ % chunksize == 0) MStartVal.push_back(M);
-    M2kap = ((((((mpz_class) M)*M)*D)/quot)/n);  // (M^2)*D/(quot*n) 
+    M2kap = ((((((mpz_class) M)*M)*D)/quot)/n);  // (M^2)*D/(quot*n)
     mpz_sqrt(sqtR.get_mpz_t(), M2kap.get_mpz_t());
-    R = sqtR.get_si();  // (int) (M*sqrt(kappa*D/n)) 
+    R = sqtR.get_si();  // (int) (M*sqrt(kappa*D/n))
   }
   return MStartVal;
 }
@@ -165,7 +165,7 @@ void NewSegSiev(short *s, unsigned long n, long D, long K, long quot, int nthrea
 
   mpz_sqrt(sqttmp.get_mpz_t(), npDtmp.get_mpz_t());
   x = sqttmp.get_si();                     /* x = (int) sqrt(n+D) */
-  		  
+
   gettimeofday(&t1,0);
 
 
@@ -176,7 +176,7 @@ void NewSegSiev(short *s, unsigned long n, long D, long K, long quot, int nthrea
   long useconds= t2.tv_usec-t1.tv_usec;
   fprintf(stderr,"Seconds SubSegSiev: %lf\n",seconds + useconds/1000000.0);
 
-  long end = calcEnd(D, quot, n, K, npDtmp); 
+  long end = calcEnd(D, quot, n, K, npDtmp);
 
 
   long chunksize = ceil((1.0*end)/nthreads);
@@ -198,7 +198,7 @@ void NewSegSiev(short *s, unsigned long n, long D, long K, long quot, int nthrea
     rat alpha0, alpha1;
     mpq_class eta, etaq;
     long c,cainv,a,ainv,q,k;
-    
+
     int tid = omp_get_thread_num();
     M = MStartVal[tid];
     #pragma omp for schedule(static,chunksize)
@@ -207,8 +207,8 @@ void NewSegSiev(short *s, unsigned long n, long D, long K, long quot, int nthrea
       M2kap = ((((((mpz_class) M)*M)*D)/quot)/n);  /* (M^2)*D/(quot*n) */
       mpz_sqrt(sqtR.get_mpz_t(), M2kap.get_mpz_t());
       R = sqtR.get_si();  /* (int) (M*sqrt(kappa*D/n)) */
-    
-      m0 = M+R; Mp = M+2*R; 
+
+      m0 = M+R; Mp = M+2*R;
       alpha0.num = n%m0; alpha0.den = m0;
       alpha1.den = m0*m0; alpha1.num = (alpha1.den-n%alpha1.den);
       eta = (((mpq_class) D)/((mpq_class) M))*(1+1/((mpq_class) quot)); /* eta = 3D/2M */
@@ -220,7 +220,7 @@ void NewSegSiev(short *s, unsigned long n, long D, long K, long quot, int nthrea
       cainv  = (ainv*c)%q;
 
       DoSieving(s, k, q, M, m0, Mp, D, n, ainv, cainv, chunksize);
-      M += 2*R+1;   
+      M += 2*R+1;
     }
   }
 
@@ -237,19 +237,19 @@ int main(int argc, char *argv[])
   int print = 0;
   int test = 0;
   int errors = 0;
-  int nthreads = 4;
+  int nthreads = 1;
   unsigned long n, D, j, n1, D1, n2, D2;
-  short *s1, *s2; 
+  short *s1, *s2;
   timeval tstart, tend;
 
-  //./sievesimp 5000000000000000000 10000000 4 
+  //./sievesimp 5000000000000000000 40000000 1
 
-  //fprintf(stderr, "Device count: %i\n",omp_get_num_devices());  
+  //fprintf(stderr, "Device count: %i\n",omp_get_num_devices());
 
   if(argc<5) {
     n = 5000000000000000000;
     D = 40000000;
-    nthreads = 4;
+    nthreads = 1 ;
     test = 0;
   } else {
     n = atol(argv[1]);

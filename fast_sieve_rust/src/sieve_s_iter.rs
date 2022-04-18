@@ -1,18 +1,15 @@
-#![allow(unused_imports)]
 use crate::dioph_appr::dioph_appr;
 use crate::dioph_appr::Rat;
-use crate::simple_sieve::simple_seg_sieve;
+use crate::par_pieces::s_piece;
 use crate::simple_sieve::sub_seg_sieve;
-use crate::small_sieve::small_sieve;
-use core::f64;
-use rayon::prelude::*;
+
 use rug::Integer;
 use rug::Rational;
-
+//pub struct Mpz = mpz::new();
 /// algorithm 1 from Helfgott, returns array with values 1 in index j if n+j is a coprime
 /// sequential version
 #[allow(non_snake_case)]
-pub fn parallel_sieve(n: usize, delta: usize, k: usize, quot: usize) -> Vec<usize>
+pub fn sieve_s_iter(n: usize, delta: usize, k: usize, quot: usize) -> Vec<usize>
 // Algorithm 1 from Helfgott, takes input n, delta, K, and ..
 {
     //return binary vector s with 0 and 1 depending of the index is a prime or not
@@ -42,10 +39,7 @@ pub fn parallel_sieve(n: usize, delta: usize, k: usize, quot: usize) -> Vec<usiz
         let eta = (Rational::from(delta) / Rational::from(m))
             * (Rational::from_f64(1.0).unwrap()
                 + Rational::from_f64(1.0).unwrap() / Rational::from(quot));
-        let a = 0;
-        let ainv = 0;
-        let q = 0;
-        dioph_appr(alpha1, 2 * r, a, ainv, q);
+        let (ainv, q) = dioph_appr(alpha1, 2 * r);
         let etaq = eta * Rational::from(q);
         let k = etaq.floor().to_f64() as usize;
         let c = (alpha0.num * q as usize + m0 / 2) / m0;
@@ -55,7 +49,7 @@ pub fn parallel_sieve(n: usize, delta: usize, k: usize, quot: usize) -> Vec<usiz
             if r0 <= -q {
                 r0 += q;
             }
-            let miter = m0 as i64 + r0;
+            let mut miter = m0 as i64 + r0;
             let iterator = (miter..=(m as i64 - ((m as i64 - miter) % q)))
                 .rev()
                 .step_by(q as usize);
@@ -64,55 +58,63 @@ pub fn parallel_sieve(n: usize, delta: usize, k: usize, quot: usize) -> Vec<usiz
             iterator
                 .into_iter()
                 .zip(returns.iter_mut())
-                .par_bridge()
-                .for_each(|(i, r)| *r = small_sieve(i, n, delta));
-            let mut small_sum = returns.into_par_iter().reduce(
-                || vec![1, 2 * delta + 1],
-                |a, b| a.iter().zip(&b).map(|(x, y)| x * y).collect(),
-            );
+                .for_each(|(i, r)| *r = s_piece(i, n, delta));
+            let mut small_sum: Vec<usize> = returns
+                .into_iter()
+                .reduce(|a, b| a.iter().zip(&b).map(|(x, y)| x * y).collect())
+                .unwrap();
             _s = _s.iter().zip(&small_sum).map(|(a, b)| a * b).collect();
 
-            let iterator2 = ((m0 as i64 + r0 + q)..=mp).step_by(q as usize);
+            miter = m0 as i64 + r0 + q;
+            let iterator2 = (miter..=mp).step_by(q as usize);
             len = iterator2.clone().count();
             returns = vec![vec![0; 2 * delta + 1]; len];
             iterator2
                 .into_iter()
                 .zip(returns.iter_mut())
-                .par_bridge()
-                .for_each(|(i, r)| *r = small_sieve(i, n, delta));
-            small_sum = returns.into_par_iter().reduce(
-                || vec![1, 2 * delta + 1],
-                |a, b| a.iter().zip(&b).map(|(x, y)| x * y).collect(),
-            );
+                .for_each(|(i, r)| *r = s_piece(i, n, delta));
+            small_sum = returns
+                .into_iter()
+                .reduce(|a, b| a.iter().zip(&b).map(|(x, y)| x * y).collect())
+                .unwrap();
             _s = _s.iter().zip(&small_sum).map(|(a, b)| a * b).collect();
             r0 -= ainv;
         }
-
         r0 = -cainv + ainv;
+
         for _j in 0..k + 1 {
             if r0 > 0 {
                 r0 -= q;
             }
             let mut miter = m0 as i64 + r0;
-            while miter >= m as i64 {
-                if miter % 2 == 1 {
-                    let np = ((n + delta) as f64 / miter as f64).floor() as i64 * miter;
-                    if np >= (n - delta) as i64 && np <= (n + delta) as i64 && np > miter {
-                        _s[np as usize - (n - delta)] = 0;
-                    }
-                }
-                miter -= q;
-            }
+            let iterator3 = (miter..=(m as i64 - ((m as i64 - miter) % q)))
+                .rev()
+                .step_by(q as usize);
+            let mut len = iterator3.clone().count();
+            let mut returns = vec![vec![0; 2 * delta + 1]; len];
+            iterator3
+                .into_iter()
+                .zip(returns.iter_mut())
+                .for_each(|(i, r)| *r = s_piece(i, n, delta));
+            let mut small_sum: Vec<usize> = returns
+                .into_iter()
+                .reduce(|a, b| a.iter().zip(&b).map(|(x, y)| x * y).collect())
+                .unwrap();
+            _s = _s.iter().zip(&small_sum).map(|(a, b)| a * b).collect();
+
             miter = m0 as i64 + r0 + q;
-            while miter <= mp {
-                if miter % 2 == 1 {
-                    let np = ((n + delta) as f64 / miter as f64).floor() as i64 * miter;
-                    if np >= (n - delta) as i64 && np <= (n + delta) as i64 && np > miter {
-                        _s[np as usize - (n - delta)] = 0;
-                    }
-                }
-                miter += q;
-            }
+            let iterator4 = (miter..=mp).step_by(q as usize);
+            len = iterator4.clone().count();
+            returns = vec![vec![0; 2 * delta + 1]; len];
+            iterator4
+                .into_iter()
+                .zip(returns.iter_mut())
+                .for_each(|(i, r)| *r = s_piece(i, n, delta));
+            small_sum = returns
+                .into_iter()
+                .reduce(|a, b| a.iter().zip(&b).map(|(x, y)| x * y).collect())
+                .unwrap();
+            _s = _s.iter().zip(&small_sum).map(|(a, b)| a * b).collect();
             r0 += ainv;
         }
     }

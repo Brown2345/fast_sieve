@@ -23,16 +23,16 @@ void OrigSegSiev(short *s, unsigned long n, long D, long K, long quot)
   rat alpha0, alpha1;
   mpq_class eta, etaq;
   long c,cainv,a,ainv,q,k,r0,j;
-  
+
   mpz_sqrt(sqt.get_mpz_t(), npD.get_mpz_t());
   x = sqt.get_si();                     /* x = (int) sqrt(n+D) */
-  		  
+
   SubSegSiev(s,n-D,2*D,K*D);
   for(M = K*D+1; M <=x; M+=(2*R+1)) {
      M2kap = ((((((mpz_class) M)*M)*D)/quot)/n);  /* (M^2)*D/(quot*n) */
     mpz_sqrt(sqtR.get_mpz_t(), M2kap.get_mpz_t());
     R = sqtR.get_si();  /* (int) (M*sqrt(kappa*D/n)) */
-    
+
     m0 = M+R; Mp = M+2*R;
     alpha0.num = n%m0; alpha0.den = m0;
     alpha1.den = m0*m0; alpha1.num = (alpha1.den-n%alpha1.den);
@@ -51,14 +51,14 @@ void OrigSegSiev(short *s, unsigned long n, long D, long K, long quot)
       for(m= m0+r0; m>=M; m-=q)
 	if(m%2) {
 	  np = ((n+D)/m)*m;
-	  if(np>=n-D && np<=n+D && np>m) 
-	    s[np-(n-D)]=0;		
+	  if(np>=n-D && np<=n+D && np>m)
+	    s[np-(n-D)]=0;
 	}
       for(m=m0+r0+q; m<=Mp; m+=q)
 	if(m%2) {
 	  np = ((n+D)/m)*m;
-	  if(np>=n-D && np<=n+D && np>m) 
-	    s[np-(n-D)]=0;	
+	  if(np>=n-D && np<=n+D && np>m)
+	    s[np-(n-D)]=0;
 	}
     }
 
@@ -68,13 +68,13 @@ void OrigSegSiev(short *s, unsigned long n, long D, long K, long quot)
       for(m= m0+r0; m>=M; m-=q)
 	if(m%2) {
 	  np = ((n+D)/m)*m;
-	  if(np>=n-D && np<=n+D && np>m) 
+	  if(np>=n-D && np<=n+D && np>m)
 	    s[np-(n-D)]=0;
 	}
       for(m=m0+r0+q; m<=Mp; m+=q)
 	if(m%2) {
 	  np = ((n+D)/m)*m;
-	  if(np>=n-D && np<=n+D && np>m) 
+	  if(np>=n-D && np<=n+D && np>m)
 	    s[np-(n-D)]=0;
 	}
     }
@@ -89,27 +89,27 @@ void DoSieving(short *s, long chunksize, long k, long q, long M, long m0, long M
 		r0 += (abs(r0)/q) * q;
     unsigned long np;
 
-		long start = tid * chunksize;	
+		long start = tid * chunksize;
 		long stop  = (tid+1) * chunksize;
 		if (stop > k+2) stop = k+2;
 
     for(long j=start; j < stop; j++, r0-=ainv) {
-      //r0 = -cainv - j * ainv;	
+      //r0 = -cainv - j * ainv;
       //r0 += (abs(r0)/q) * q;
       if (r0+q <= 0)
 				r0 += q;
-      
+
 			for(long m= m0+r0; m>=M; m-=q)
 				if(m%2) {
 					np = ((n+D)/m)*m;
-					if(np>=n-D && np<=n+D && np>m) 
-			  		s[np-(n-D)]=0;		
+					if(np>=n-D && np<=n+D && np>m)
+			  		s[np-(n-D)]=0;
 				}
       for(long m=m0+r0+q; m<=Mp; m+=q)
 				if(m%2) {
 	  			np = ((n+D)/m)*m;
-	  			if(np>=n-D && np<=n+D && np>m) 
-	    			s[np-(n-D)]=0;	
+	  			if(np>=n-D && np<=n+D && np>m)
+	    			s[np-(n-D)]=0;
 				}
     }
 
@@ -117,10 +117,10 @@ void DoSieving(short *s, long chunksize, long k, long q, long M, long m0, long M
 		r0 += tid * chunksize * ainv;
     r0 -= (abs(r0)/q) * q;
 
-		start = tid * chunksize;	
+		start = tid * chunksize;
 		stop  = (tid+1) * chunksize;
 		if (stop > k+1) stop = k+1;
-		
+
 		for(long j = start; j < stop; j++, r0+=ainv) {
 			//r0 = -cainv + (j+1) * ainv;
       //r0 -= (abs(r0)/q) * q;
@@ -129,13 +129,13 @@ void DoSieving(short *s, long chunksize, long k, long q, long M, long m0, long M
       for(long m= m0+r0; m>=M; m-=q)
 				if(m%2) {
 					np = ((n+D)/m)*m;
-					if(np>=n-D && np<=n+D && np>m) 
+					if(np>=n-D && np<=n+D && np>m)
 	    			s[np-(n-D)]=0;
 				}
       for(long m=m0+r0+q; m<=Mp; m+=q)
 				if(m%2) {
 	  			np = ((n+D)/m)*m;
-	  			if(np>=n-D && np<=n+D && np>m) 
+	  			if(np>=n-D && np<=n+D && np>m)
 	    			s[np-(n-D)]=0;
 				}
 		}
@@ -153,17 +153,17 @@ void NewSegSiev(short *s, unsigned long n, long D, long K, long quot)
   rat alpha0, alpha1;
   mpq_class eta, etaq;
   long c,cainv,a,ainv,q,k;
-  
+
   mpz_sqrt(sqt.get_mpz_t(), npD.get_mpz_t());
   x = sqt.get_si();                     /* x = (int) sqrt(n+D) */
-  		  
+
   SubSegSiev(s,n-D,2*D,K*D);
   for(M = K*D+1; M <=x; M+=(2*R+1)) { //unabh: M, K, D, R
      M2kap = ((((((mpz_class) M)*M)*D)/quot)/n);  /* (M^2)*D/(quot*n) */
     mpz_sqrt(sqtR.get_mpz_t(), M2kap.get_mpz_t());
     R = sqtR.get_si();  /* (int) (M*sqrt(kappa*D/n)) */
-    
-    m0 = M+R; Mp = M+2*R; 
+
+    m0 = M+R; Mp = M+2*R;
     alpha0.num = n%m0; alpha0.den = m0;
     alpha1.den = m0*m0; alpha1.num = (alpha1.den-n%alpha1.den);
     eta = (((mpq_class) D)/((mpq_class) M))*(1+1/((mpq_class) quot)); /* eta = 3D/2M */
@@ -175,9 +175,9 @@ void NewSegSiev(short *s, unsigned long n, long D, long K, long quot)
     cainv  = (ainv*c)%q;
 
 		long chunksize = ceil((1.0*(k+2)) / omp_get_max_threads());
-		//#pragma omp parallel // private (np, r0)
+		#pragma omp parallel // private (np, r0)
     DoSieving(s, chunksize, k, q, M, m0, Mp, D, n, ainv, cainv);
-   
+
   }
 }
 
@@ -191,9 +191,9 @@ int main(int argc, char *argv[])
   short *s1, *s2; //manu
   timeval tstart, tend;
 
-//./sievesimp 5000000000000000000 10000000 4 
+//./sievesimp 5000000000000000000 10000000 4
 
-  
+
   if(argc<5) {
     n = 5000000000000000000;
     D = 40000000;
@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
     nthreads = atol(argv[3]);
     test = atol(argv[4]);
   }
-
+  printf("meeee");
   s2 = (short *) calloc(2*D+1,sizeof(short));
   n1 = n2 = n;
   D1 = D2 = D;

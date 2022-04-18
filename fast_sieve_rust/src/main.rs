@@ -1,42 +1,29 @@
 #![allow(unused_imports)]
-use fast_sieve_rust::new_seg_sieve;
-use fast_sieve_rust::parallel_sieve;
-use fast_sieve_rust::seg_sieve;
+use fast_sieve_rust::par_pieces::b_seq_piece;
+use fast_sieve_rust::par_sieve_atomic::par_sieve_atomic;
+use fast_sieve_rust::parallel;
+use fast_sieve_rust::parallel::parallel_sieve;
+use fast_sieve_rust::s_par_sieve;
+use fast_sieve_rust::sieve_loop;
+use fast_sieve_rust::sieve_s_iter;
 use fast_sieve_rust::simple_seg_sieve;
-use fast_sieve_rust::simple_sieve;
-use fast_sieve_rust::small_sieve;
-use fast_sieve_rust::sub_seg_sieve;
 use rayon::prelude::*;
+use std::time::Instant;
 
 fn main() {
-    /*
-    let n = 10;
-    let delta = 5;
-    let deltak = 40;
-    let x = 5;
-    let y = 6;
-    let z = 1;
-    let iterator = (x..=y).step_by(z);
-    let len = iterator.clone().count();
-    let mut returns = vec![vec![0; deltak]; len];
-    //let startvec = vec![1; iterator.clone().count()];
-    iterator
-        .into_iter()
-        .zip(returns.iter_mut())
-        .par_bridge()
-        .for_each(|(i, r)| *r = small_sieve(i, n, delta));
-    let _result = returns.into_par_iter().reduce(
-        || vec![1; len],
-        |a, b| a.iter().zip(&b).map(|(x, y)| x * y).collect(),
-    );
-    */
-    let n = 500;
-    let delta = 100;
-    let s = parallel_sieve(n, delta, 8, 4);
-    println!("Seg is {:?}", s);
-    for i in 0..=2 * delta {
-        if s[i] == 1 {
-            println!("Eine Primzahl ist {}", n - delta + i);
-        }
-    }
+    rayon::ThreadPoolBuilder::new()
+        .num_threads(6)
+        .build_global()
+        .unwrap();
+
+    let n: usize = 5000000000000000000;
+    let delta = 40000000;
+    let time = Instant::now();
+    let _s = sieve_loop(n, delta, 8, 4);
+    let elapsed_time = time.elapsed();
+    println!("Sequential is = {}", elapsed_time.as_millis());
+    let time2 = Instant::now();
+    let _s = parallel_sieve(n, delta, 8, 4);
+    let elapsed_time2 = time2.elapsed();
+    println!("Parallel is = {}", elapsed_time2.as_millis());
 }

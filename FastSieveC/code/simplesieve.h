@@ -172,6 +172,7 @@ void SegSiev(short *s, unsigned long n, unsigned long D)
   SubSegSiev(s,n,D,M);
 }
 
+/*
 void main () {
   short *s = 51;
   int n = 50;
@@ -183,3 +184,4 @@ void main () {
     }
   }
 }
+*/

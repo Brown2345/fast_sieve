@@ -26,13 +26,21 @@ void OrigSegSiev(short *s, unsigned long n, long D, long K, long quot)
 
   mpz_sqrt(sqt.get_mpz_t(), npD.get_mpz_t());
   x = sqt.get_si();                     /* x = (int) sqrt(n+D) */
+  timeval t1, t2, t4;
+    gettimeofday(&t1,0);
 
-  SubSegSiev(s,n-D,2*D,K*D);
+
+    SubSegSiev(s,n-D,2*D,K*D);
+
+    gettimeofday(&t2,0);
+    long seconds = t2.tv_sec-t1.tv_sec;
+    long useconds= t2.tv_usec-t1.tv_usec;
+    fprintf(stderr,"Seconds SubSegSiev: %lf\n",seconds + useconds/1000000.0);
+
   for(M = K*D+1; M <=x; M+=(2*R+1)) {
      M2kap = ((((((mpz_class) M)*M)*D)/quot)/n);  /* (M^2)*D/(quot*n) */
     mpz_sqrt(sqtR.get_mpz_t(), M2kap.get_mpz_t());
     R = sqtR.get_si();  /* (int) (M*sqrt(kappa*D/n)) */
-
     m0 = M+R; Mp = M+2*R;
     alpha0.num = n%m0; alpha0.den = m0;
     alpha1.den = m0*m0; alpha1.num = (alpha1.den-n%alpha1.den);
@@ -78,6 +86,10 @@ void OrigSegSiev(short *s, unsigned long n, long D, long K, long quot)
 				}
 		}
 	}
+  gettimeofday(&t4,0);
+  seconds = t4.tv_sec-t2.tv_sec;
+  useconds= t4.tv_usec-t2.tv_usec;
+  fprintf(stderr,"Seconds 3: %lf\n",seconds + useconds/1000000.0);
 }
 
 int main(int argc, char *argv[])
